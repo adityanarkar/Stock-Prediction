@@ -8,5 +8,6 @@ Plan of action
 
 3. Add support for more algorithms and test them in real stock market
 
-(https://www.youtube.com/watch?v=r4mwkS2T9aI)[Tutorial]
-(https://in.finance.yahoo.com/quote/M%26MFIN.NS/history?period1=1199167200&period2=1548050400&interval=1d&filter=history&frequency=1d)[Dataset]
+[Tutorial] (https://www.youtube.com/watch?v=r4mwkS2T9aI)
+
+[Dataset] (https://in.finance.yahoo.com/quote/M%26MFIN.NS/history?period1=1199167200&period2=1548050400&interval=1d&filter=history&frequency=1d)
