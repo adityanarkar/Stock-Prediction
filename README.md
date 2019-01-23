@@ -11,3 +11,9 @@ Plan of action
 [Tutorial](https://www.youtube.com/watch?v=r4mwkS2T9aI)
 
 [Dataset](https://in.finance.yahoo.com/quote/M%26MFIN.NS/history?period1=1199167200&period2=1548050400&interval=1d&filter=history&frequency=1d)
+
+**Jan 23 2019**
+* Implemented Simple Linear Rgression
+* Added 50 day moving average feature
+    * By adding this feature, prediction changed and went closer to the actual price value.
+* Learnt Pandas dataframe -- .iloc 
