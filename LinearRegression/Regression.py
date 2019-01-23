@@ -11,7 +11,7 @@ def fifty_day_MA():
     for row in range(moving_avg_window, len(df.index)):
         print(row)
         print((df.iloc[row-moving_avg_window:row, column].mean()))
-        df.iloc[row, -1] = (df.iloc[row-moving_avg_window:row, column].mean())
+        df.iloc[row, -1] = (df.iloc[row-moving_avg_window:row+1, column].mean())
 
 df = pd.read_csv("/Users/adityanarkar/Aditya/Project/Implementation/Data/M&MFIN.NS.csv")
 

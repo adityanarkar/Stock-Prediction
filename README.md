@@ -17,3 +17,4 @@ Plan of action
 * Added 50 day moving average feature
     * By adding this feature, prediction changed and went closer to the actual price value.
 * Learnt Pandas dataframe -- .iloc 
+* iloc is exclusive of upper bound while accessing multiple rows or columns at the same time
