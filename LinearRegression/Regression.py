@@ -4,14 +4,10 @@ from sklearn import preprocessing
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
+import features
+
 forecast_days = 30
 moving_avg_window = 10
-
-def fifty_day_MA():
-    column = 1
-
-    for row in range(moving_avg_window, len(df.index)):
-        df.iloc[row, -1] = (df.iloc[row - moving_avg_window:row, column].mean())
 
 df = pd.read_csv("/Users/adityanarkar/Aditya/Project/Implementation/Data/M&MFIN.NS.csv")
 
@@ -22,7 +18,7 @@ df['PCT_CHNG'] = ((df['Open'] - df['Adj Close']) / df['Adj Close']) * 100
 
 df['Moving_Avg'] = np.nan
 
-fifty_day_MA()
+features.fifty_day_MA(df, moving_avg_window)
 print(df.tail())
 df.dropna(inplace=True)
 print(df.tail())
