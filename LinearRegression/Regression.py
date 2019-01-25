@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 import features
 
-forecast_days = 30
+forecast_days = 6
 moving_avg_window = 10
 
 df = pd.read_csv("/Users/adityanarkar/Aditya/Project/Implementation/Data/M&MFIN.NS.csv")
@@ -19,6 +19,8 @@ df['PCT_CHNG'] = ((df['Open'] - df['Adj Close']) / df['Adj Close']) * 100
 df['Moving_Avg'] = np.nan
 
 features.simpleMA(df, moving_avg_window)
+df['Weighted_MA'] = np.nan
+features.weightedMA(df, moving_avg_window)
 print(df.tail())
 df.dropna(inplace=True)
 print(df.tail())
