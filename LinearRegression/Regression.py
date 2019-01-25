@@ -18,7 +18,7 @@ df['PCT_CHNG'] = ((df['Open'] - df['Adj Close']) / df['Adj Close']) * 100
 
 df['Moving_Avg'] = np.nan
 
-features.fifty_day_MA(df, moving_avg_window)
+features.simpleMA(df, moving_avg_window)
 print(df.tail())
 df.dropna(inplace=True)
 print(df.tail())

@@ -1,4 +1,4 @@
-def fifty_day_MA(df, moving_avg_window):
+def simpleMA(df, moving_avg_window):
     column = 1
 
     for row in range(moving_avg_window, len(df.index)):
