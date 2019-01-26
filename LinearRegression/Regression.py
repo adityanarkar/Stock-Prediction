@@ -13,16 +13,34 @@ df = pd.read_csv("/Users/adityanarkar/Aditya/Project/Implementation/Data/M&MFIN.
 
 # Selecting features that brings in value
 df = df[['Open', 'Adj Close', 'High', 'Low']]
+closeIndex = df.columns.get_loc("Adj Close")
+highIndex = df.columns.get_loc("High")
+lowIndex = df.columns.get_loc("Low")
+
 df['HL_PCT'] = ((df['High'] - df['Low']) / df['Low']) * 100
 df['PCT_CHNG'] = ((df['Open'] - df['Adj Close']) / df['Adj Close']) * 100
 
 df['Moving_Avg'] = np.nan
-
-features.simpleMA(df, moving_avg_window)
-df['Weighted_MA'] = np.nan
-features.weightedMA(df, moving_avg_window)
-print(df.tail())
+features.simpleMA(df, moving_avg_window, closeIndex)
 df.dropna(inplace=True)
+
+df['Weighted_MA'] = np.nan
+features.weightedMA(df, moving_avg_window, closeIndex)
+df.dropna(inplace=True)
+
+df['Momentum'] = np.nan
+features.momentum(df, closeIndex)
+df.dropna(inplace=True)
+
+df['%K'] = np.nan
+features.stochasticK(df, closeIndex, highIndex, lowIndex, 10)
+df.dropna(inplace=True)
+
+df['%d'] = np.nan
+features.stochasticD(df, df.columns.get_loc('%K'))
+df.dropna(inplace=True)
+print(df.tail())
+
 print(df.tail())
 # df.dropna(how='any', subset=['Open', 'Adj Close', 'High', 'Low'], inplace=True)
 
