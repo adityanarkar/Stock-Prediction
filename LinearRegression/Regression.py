@@ -44,6 +44,8 @@ df.dropna(inplace=True)
 df['RSI'] = np.nan
 features.RSI(df, closeIndex)
 df.dropna(inplace=True)
+
+features.MACD(df, closeIndex)
 # df.dropna(how='any', subset=['Open', 'Adj Close', 'High', 'Low'], inplace=True)
 
 df['label'] = df['Adj Close'].shift(-forecast_days)

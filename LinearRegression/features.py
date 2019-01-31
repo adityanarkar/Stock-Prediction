@@ -1,5 +1,9 @@
+import numpy as np
 import pandas as pd
+
+
 def simpleMA(df, moving_avg_window, close):
+    # TODO:row - moving_avg_window:row-1
     for row in range(moving_avg_window, len(df.index)):
         df.iloc[row, -1] = (df.iloc[row - moving_avg_window:row, close].mean())
 
@@ -14,6 +18,21 @@ def weightedMA(df, moving_avg_window, close):
             tempDiv = tempDiv + weight
         df.iloc[row, -1] = total / tempDiv
 
+
+def EMA(df, moving_avg_window, close):
+    temp = 0
+    columnName = str(moving_avg_window) + '-day-EMA'
+    df[columnName] = np.nan
+    for row in range(moving_avg_window, moving_avg_window + 1):
+        temp = df.iloc[row - moving_avg_window:row - 1, close].mean()
+
+    multiplier = (2 / (moving_avg_window + 1))
+    for row in range(moving_avg_window, len(df.index)):
+        if row == moving_avg_window:
+            df.iloc[row, -1] = (df.iloc[row, close] - temp) * multiplier + temp
+        else:
+            temp = df.iloc[row - 1, -1]
+            df.iloc[row, -1] = (df.iloc[row, close] - temp) * multiplier + temp
 
 def momentum(df, close):
     for row in range(9, len(df.index)):
@@ -43,3 +62,13 @@ def RSI(df: pd.DataFrame, close):
         AvgLoss = -1 * (temp[temp < 0].sum()) / 14
         RS = AvgGain / AvgLoss
         df.iloc[row, -1] = 100 - (100 / (1 + RS))
+
+
+def MACD(df: pd.DataFrame, close):
+    EMA(df, 9, close)
+    EMA(df, 12, close)
+    EMA(df, 26, close)
+    df.dropna(inplace=True)
+    df['MACD'] = np.nan
+    MACDLine = df['12-day-EMA'] - df['26-day-EMA']
+    df['MACD'] = MACDLine - df['9-day-EMA']
