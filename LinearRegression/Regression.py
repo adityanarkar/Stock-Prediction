@@ -13,6 +13,7 @@ df = pd.read_csv("/Users/adityanarkar/Aditya/Project/Implementation/Data/M&MFIN.
 
 # Selecting features that brings in value
 df = df[['Open', 'Adj Close', 'High', 'Low']]
+openIndex = df.columns.get_loc('Open')
 closeIndex = df.columns.get_loc("Adj Close")
 highIndex = df.columns.get_loc("High")
 lowIndex = df.columns.get_loc("Low")
@@ -22,7 +23,6 @@ df['PCT_CHNG'] = ((df['Open'] - df['Adj Close']) / df['Adj Close']) * 100
 
 df['Moving_Avg'] = np.nan
 features.simpleMA(df, moving_avg_window, closeIndex)
-df.dropna(inplace=True)
 
 df['Weighted_MA'] = np.nan
 features.weightedMA(df, moving_avg_window, closeIndex)
@@ -39,11 +39,12 @@ df.dropna(inplace=True)
 df['%d'] = np.nan
 features.stochasticD(df, df.columns.get_loc('%K'))
 df.dropna(inplace=True)
-print(df.tail())
+# print(df.tail())
 
-print(df.tail())
+df['RSI'] = np.nan
+features.RSI(df, closeIndex)
+df.dropna(inplace=True)
 # df.dropna(how='any', subset=['Open', 'Adj Close', 'High', 'Low'], inplace=True)
-
 
 df['label'] = df['Adj Close'].shift(-forecast_days)
 
