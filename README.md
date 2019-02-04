@@ -18,3 +18,6 @@ Plan of action
     * By adding this feature, prediction changed and went closer to the actual price value.
 * Learnt Pandas dataframe -- .iloc 
 * iloc is exclusive of upper bound while accessing multiple rows or columns at the same time
+
+**Feb 04 2019**
+* Total features added --> Simple MA, Weighted MA, Momentum, Stochastic K, Stochastic D, RSI, MACD.
