@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-from sklearn import preprocessing
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
@@ -9,8 +8,8 @@ import features
 forecast_days = 6
 moving_avg_window = 10
 
-df = pd.read_csv("/Users/adityanarkar/Aditya/Project/Implementation/Data/M&MFIN.NS.csv")
-
+df = pd.read_csv("/Users/adityanarkar/Aditya/Project/Implementation/Data/M&MFIN.NS2.csv")
+print(len(df.index))
 # Selecting features that brings in value
 df = df[['Open', 'Adj Close', 'High', 'Low']]
 openIndex = df.columns.get_loc('Open')
@@ -47,13 +46,14 @@ df.dropna(inplace=True)
 
 features.MACD(df, closeIndex)
 # df.dropna(how='any', subset=['Open', 'Adj Close', 'High', 'Low'], inplace=True)
+print(df.tail())
 
 df['label'] = df['Adj Close'].shift(-forecast_days)
 
 X_temp = np.array(df.drop(['label'], 1))
 
 # Scaled X in the range of -1 to 1.
-X_temp = preprocessing.scale(X_temp)
+# X_temp = preprocessing.scale(X_temp)
 
 X = X_temp[:-forecast_days]
 

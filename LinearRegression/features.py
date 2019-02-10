@@ -5,7 +5,7 @@ import pandas as pd
 def simpleMA(df, moving_avg_window, close):
     # TODO:row - moving_avg_window:row-1
     for row in range(moving_avg_window, len(df.index)):
-        df.iloc[row, -1] = (df.iloc[row - moving_avg_window:row, close].mean())
+        df.iloc[row, -1] = 1 if (df.iloc[row - moving_avg_window:row, close].mean()) >= df.iloc[row, close] else -1
 
 
 def weightedMA(df, moving_avg_window, close):
@@ -72,3 +72,10 @@ def MACD(df: pd.DataFrame, close):
     df['MACD'] = np.nan
     MACDLine = df['12-day-EMA'] - df['26-day-EMA']
     df['MACD'] = MACDLine - df['9-day-EMA']
+
+
+def checkPriceWithMA(close, ma):
+    if (close < ma):
+        return -1
+    else:
+        return 1
