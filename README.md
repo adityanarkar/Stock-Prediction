@@ -23,4 +23,5 @@ Plan of action
 * Total features added --> Simple MA, Weighted MA, Momentum, Stochastic K, Stochastic D, RSI, MACD.
 
 **Feb 10 2019**
-*Todo: Discretize the features, test with other stocks, add SVM model (try different values to set its parameters)
+
+* Todo: Discretize the features, test with other stocks, add SVM model (try different values to set its parameters)
