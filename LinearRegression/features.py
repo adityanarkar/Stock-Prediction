@@ -5,7 +5,7 @@ import pandas as pd
 def simpleMA(df, moving_avg_window, close):
     # TODO:row - moving_avg_window:row-1
     for row in range(moving_avg_window, len(df.index)):
-        df.iloc[row, -1] = 1 if (df.iloc[row - moving_avg_window:row, close].mean()) >= df.iloc[row, close] else -1
+        df.iloc[row, -1] = 1 if (df.iloc[row - moving_avg_window:row, close].mean()) < df.iloc[row, close] else -1
 
 
 def weightedMA(df, moving_avg_window, close):
