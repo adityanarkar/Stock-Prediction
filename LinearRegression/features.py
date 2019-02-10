@@ -16,7 +16,7 @@ def weightedMA(df, moving_avg_window, close):
             temp = df.iloc[row - (weight), close]
             total = (((moving_avg_window + 1) - weight) * temp) + total
             tempDiv = tempDiv + weight
-        df.iloc[row, -1] = total / tempDiv
+        df.iloc[row, -1] = 1 if df.iloc[row, close] > (total / tempDiv) else -1
 
 
 def EMA(df, moving_avg_window, close):
