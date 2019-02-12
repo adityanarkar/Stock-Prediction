@@ -90,4 +90,11 @@ def MACD(df: pd.DataFrame, close):
     df['MACD'] = MACDLine - df['9-day-EMA']
     df['MACD'] = df['MACD'].diff()
     df.dropna(inplace=True)
-    print(df.head())
+    df['MACD'] = df['MACD'].apply(checkValue)
+
+
+def checkValue(value):
+    if value >= 0:
+        return 1
+    else:
+        return -1
