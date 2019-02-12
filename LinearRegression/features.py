@@ -79,6 +79,7 @@ def RSI(df: pd.DataFrame, close):
         df.iloc[row, -1] = 100 - (100 / (1 + RS))
 
 
+
 def MACD(df: pd.DataFrame, close):
     EMA(df, 9, close)
     EMA(df, 12, close)
@@ -87,10 +88,6 @@ def MACD(df: pd.DataFrame, close):
     df['MACD'] = np.nan
     MACDLine = df['12-day-EMA'] - df['26-day-EMA']
     df['MACD'] = MACDLine - df['9-day-EMA']
-
-
-def checkPriceWithMA(close, ma):
-    if (close < ma):
-        return -1
-    else:
-        return 1
+    df['MACD'] = df['MACD'].diff()
+    df.dropna(inplace=True)
+    print(df.head())
