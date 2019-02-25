@@ -45,13 +45,13 @@ def addFeatures(df: pd.DataFrame):
     df.dropna(inplace=True)
 
     features.MACD(df, closeIndex)
-    # df.dropna(how='any', subset=['Open', 'Adj Close', 'High', 'Low'], inplace=True)
-    print(df.tail())
+    df.dropna(inplace=True)
+    return df
 
 
 def linearRegression(df: pd.DataFrame):
     df['label'] = df['Adj Close'].shift(-forecast_days)
-
+    print(df.tail(7))
     X_temp = np.array(df.drop(['label'], 1))
 
     # Scaled X in the range of -1 to 1.
@@ -61,9 +61,10 @@ def linearRegression(df: pd.DataFrame):
 
     X_lately = X_temp[-forecast_days:]
 
-    df.dropna(inplace=True)
-    y = np.array(df['label'])
+    y = np.array(df['label'])[:-forecast_days]
 
+    print(len(X))
+    print(len(y))
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
     reg = LinearRegression().fit(X_train, y_train)

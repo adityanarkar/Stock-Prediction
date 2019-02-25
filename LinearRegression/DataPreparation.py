@@ -23,6 +23,6 @@ def visualize(df: pd.DataFrame):
 
 
 df = readData()
-visualize(df)
-regression.addFeatures(df)
+# visualize(df)
+df = regression.addFeatures(df)
 regression.linearRegression(df)
