@@ -8,64 +8,66 @@ import features
 forecast_days = 6
 moving_avg_window = 10
 
-df = pd.read_csv("/Users/adityanarkar/Aditya/Project/Implementation/Data/M&MFIN.NS2.csv")
-print(len(df.index))
-# Selecting features that brings in value
-df = df[['Open', 'Adj Close', 'High', 'Low']]
-openIndex = df.columns.get_loc('Open')
-closeIndex = df.columns.get_loc("Adj Close")
-highIndex = df.columns.get_loc("High")
-lowIndex = df.columns.get_loc("Low")
 
-df['HL_PCT'] = ((df['High'] - df['Low']) / df['Low']) * 100
-df['PCT_CHNG'] = ((df['Open'] - df['Adj Close']) / df['Adj Close']) * 100
+def addFeatures(df: pd.DataFrame):
+    # Selecting features that brings in value
+    df = df[['Open', 'Adj Close', 'High', 'Low']]
+    openIndex = df.columns.get_loc('Open')
+    closeIndex = df.columns.get_loc("Adj Close")
+    highIndex = df.columns.get_loc("High")
+    lowIndex = df.columns.get_loc("Low")
 
-df['Moving_Avg'] = np.nan
-features.simpleMA(df, moving_avg_window, closeIndex)
+    df['HL_PCT'] = ((df['High'] - df['Low']) / df['Low']) * 100
+    df['PCT_CHNG'] = ((df['Open'] - df['Adj Close']) / df['Adj Close']) * 100
 
-df['Weighted_MA'] = np.nan
-features.weightedMA(df, moving_avg_window, closeIndex)
-df.dropna(inplace=True)
+    df['Moving_Avg'] = np.nan
+    features.simpleMA(df, moving_avg_window, closeIndex)
 
-df['Momentum'] = np.nan
-features.momentum(df, closeIndex)
-df.dropna(inplace=True)
+    df['Weighted_MA'] = np.nan
+    features.weightedMA(df, moving_avg_window, closeIndex)
+    df.dropna(inplace=True)
 
-df['%K'] = np.nan
-features.stochasticK(df, closeIndex, highIndex, lowIndex, 10)
-df.dropna(inplace=True)
+    df['Momentum'] = np.nan
+    features.momentum(df, closeIndex)
+    df.dropna(inplace=True)
 
-df['%d'] = np.nan
-features.stochasticD(df, df.columns.get_loc('%K'))
-df.dropna(inplace=True)
-# print(df.tail())
+    df['%K'] = np.nan
+    features.stochasticK(df, closeIndex, highIndex, lowIndex, 10)
+    df.dropna(inplace=True)
 
-df['RSI'] = np.nan
-features.RSI(df, closeIndex)
-df.dropna(inplace=True)
+    df['%d'] = np.nan
+    features.stochasticD(df, df.columns.get_loc('%K'))
+    df.dropna(inplace=True)
+    # print(df.tail())
 
-features.MACD(df, closeIndex)
-# df.dropna(how='any', subset=['Open', 'Adj Close', 'High', 'Low'], inplace=True)
-print(df.tail())
+    df['RSI'] = np.nan
+    features.RSI(df, closeIndex)
+    df.dropna(inplace=True)
 
-df['label'] = df['Adj Close'].shift(-forecast_days)
+    features.MACD(df, closeIndex)
+    # df.dropna(how='any', subset=['Open', 'Adj Close', 'High', 'Low'], inplace=True)
+    print(df.tail())
 
-X_temp = np.array(df.drop(['label'], 1))
 
-# Scaled X in the range of -1 to 1.
-# X_temp = preprocessing.scale(X_temp)
+def linearRegression(df: pd.DataFrame):
+    df['label'] = df['Adj Close'].shift(-forecast_days)
 
-X = X_temp[:-forecast_days]
+    X_temp = np.array(df.drop(['label'], 1))
 
-X_lately = X_temp[-forecast_days:]
+    # Scaled X in the range of -1 to 1.
+    # X_temp = preprocessing.scale(X_temp)
 
-df.dropna(inplace=True)
-y = np.array(df['label'])
+    X = X_temp[:-forecast_days]
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+    X_lately = X_temp[-forecast_days:]
 
-reg = LinearRegression().fit(X_train, y_train)
-print(reg.score(X_test, y_test))
+    df.dropna(inplace=True)
+    y = np.array(df['label'])
 
-forecast = reg.predict(X_lately)
-print(forecast)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+    reg = LinearRegression().fit(X_train, y_train)
+    print(reg.score(X_test, y_test))
+
+    forecast = reg.predict(X_lately)
+    print(forecast)
