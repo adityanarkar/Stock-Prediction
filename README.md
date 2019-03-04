@@ -25,3 +25,8 @@ Plan of action
 **Feb 10 2019**
 
 * Todo: Discretize the features, test with other stocks, add SVM model (try different values to set its parameters)
+
+**Mar 04 2019**
+How ARMA process models can help predict the stock's future values. 
+* [Basics](https://www.youtube.com/watch?v=v70-kLB3BLM)
+* ARMA process models will try to find a better value for the `rho`.
