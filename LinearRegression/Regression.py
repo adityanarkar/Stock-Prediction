@@ -6,6 +6,7 @@ from sklearn.linear_model import LinearRegression, LogisticRegression
 
 import features
 
+forecast_days = 6
 moving_avg_window = 10
 
 
@@ -46,16 +47,15 @@ def addFeatures(df: pd.DataFrame):
 
     features.MACD(df, closeIndex)
     df.dropna(inplace=True)
+
+    df['label'] = df['Adj Close'].shift(-forecast_days)
+    df['label'] = df.apply(createLabel, axis=1)
+
     return df
 
 
 def linearRegression(df: pd.DataFrame):
-    forecast_days = 6
 
-    df['label'] = df['Adj Close'].shift(-forecast_days)
-    print(df.tail(7))
-    df['label'] = df.apply(createLabel, axis=1)
-    print(df.tail(7))
     X_temp = np.array(df.drop(['label'], 1))
 
     X = X_temp[:-forecast_days]
