@@ -77,7 +77,7 @@ def linearRegression(df: pd.DataFrame):
     forecastLinearReg = linearReg.predict(X_lately)
     print("Linear regression forecast = " + str(forecastLinearReg))
 
-    logisticReg = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial').fit(X_train, y_train)
+    logisticReg = LogisticRegression(solver='liblinear', multi_class='ovr').fit(X_train, y_train)
     print("Logistic regression = " + str(logisticReg.score(X_test, y_test)))
     #
     forecastLogisticReg = logisticReg.predict(X_lately)
