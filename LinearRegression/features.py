@@ -92,7 +92,6 @@ def MACD(df: pd.DataFrame, close):
     df.dropna(inplace=True)
     df['MACD'] = df['MACD'].apply(checkValue)
 
-
 def checkValue(value):
     if value >= 0:
         return 1

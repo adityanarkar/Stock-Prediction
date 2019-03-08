@@ -1,11 +1,11 @@
+import math
+
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression, LogisticRegression
 
 import features
 
-forecast_days = 6
 moving_avg_window = 10
 
 
@@ -50,12 +50,13 @@ def addFeatures(df: pd.DataFrame):
 
 
 def linearRegression(df: pd.DataFrame):
+    forecast_days = 6
+
     df['label'] = df['Adj Close'].shift(-forecast_days)
     print(df.tail(7))
+    df['label'] = df.apply(createLabel, axis=1)
+    print(df.tail(7))
     X_temp = np.array(df.drop(['label'], 1))
-
-    # Scaled X in the range of -1 to 1.
-    # X_temp = preprocessing.scale(X_temp)
 
     X = X_temp[:-forecast_days]
 
@@ -63,12 +64,38 @@ def linearRegression(df: pd.DataFrame):
 
     y = np.array(df['label'])[:-forecast_days]
 
-    print(len(X))
-    print(len(y))
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+    X_train, X_test, y_train, y_test = get_train_test_split(X, y, 0.8)
 
-    reg = LinearRegression().fit(X_train, y_train)
-    print(reg.score(X_test, y_test))
+    print(len(X_test))
+    print(len(X_train))
+    print(len(y_test))
+    print(len(y_train))
+    #
+    linearReg = LinearRegression().fit(X_train, y_train)
+    print("Linear regression = " + str(linearReg.score(X_test, y_test)))
+    #
+    forecastLinearReg = linearReg.predict(X_lately)
+    print("Linear regression forecast = " + str(forecastLinearReg))
 
-    forecast = reg.predict(X_lately)
-    print(forecast)
+    logisticReg = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial').fit(X_train, y_train)
+    print("Logistic regression = " + str(logisticReg.score(X_test, y_test)))
+    #
+    forecastLogisticReg = logisticReg.predict(X_lately)
+    print("Logistic regression forecast = " + str(forecastLogisticReg))
+
+
+def createLabel(x):
+    if math.isnan(x['label']):
+        return np.nan
+    elif x['label'] > x['Adj Close']:
+        return 1
+    else:
+        return -1
+
+
+def get_train_test_split(X, y, size):
+    X_train = X[:-math.ceil(len(X) * size)]
+    X_test = X[-math.ceil(len(X) * size):]
+    y_train = y[:-math.ceil(len(y) * size)]
+    y_test = y[-math.ceil(len(y) * size):]
+    return X_train, X_test, y_train, y_test
