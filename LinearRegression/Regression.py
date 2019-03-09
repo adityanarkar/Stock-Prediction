@@ -67,8 +67,7 @@ def linearRegression(df: pd.DataFrame):
 
     X_train, X_test, y_train, y_test = get_train_test_split(X, y, 0.2)
 
-    print(X_train[:, 0].shape)
-    print(len(y_train))
+
     assert len(X_train) == len(y_train)
     assert len(X_test) == len(y_test)
 
@@ -84,7 +83,7 @@ def linearRegression(df: pd.DataFrame):
     forecastLogisticReg = logisticReg.predict(X_lately)
     print("Logistic regression forecast = " + str(forecastLogisticReg))
 
-    plotResults(X_train, y_train, X_test, logisticReg, linearReg)
+    # plotResults(X_train, y_train, X_test, logisticReg, linearReg)
 
 
 def createLabel(x):

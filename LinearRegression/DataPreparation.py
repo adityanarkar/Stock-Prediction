@@ -4,9 +4,7 @@ import pandas as pd
 
 import Regression as regression
 
-LOCAL_FILE_PATH = os.path.join("datasets", "Titan", "TITAN.NS.CSV")
-FILE_NAME = "Titan.csv"
-
+LOCAL_FILE_PATH = os.path.join("datasets", "Symphony", "SYMPHONY.NS.CSV")
 
 def readData():
     df = pd.read_csv("./" + LOCAL_FILE_PATH)
@@ -16,6 +14,6 @@ def readData():
 
 df = readData()
 df = regression.addFeatures(df)
-df.drop(columns=['12-day-EMA', '26-day-EMA', '9-day-EMA', 'Open', 'High', 'Low', 'Date'], inplace=True)
+df.drop(columns=['12-day-EMA', '26-day-EMA', '9-day-EMA', 'Open', 'High', 'Low', 'Date', 'Adj Close'], inplace=True)
 
 regression.linearRegression(df)
