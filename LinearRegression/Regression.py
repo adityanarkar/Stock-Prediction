@@ -1,5 +1,6 @@
 import math
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression, LogisticRegression
@@ -12,7 +13,7 @@ moving_avg_window = 10
 
 def addFeatures(df: pd.DataFrame):
     # Selecting features that brings in value
-    df = df[['Open', 'Adj Close', 'High', 'Low']]
+    df = df[['Date', 'Open', 'Adj Close', 'High', 'Low']]
     openIndex = df.columns.get_loc('Open')
     closeIndex = df.columns.get_loc("Adj Close")
     highIndex = df.columns.get_loc("High")
@@ -64,24 +65,26 @@ def linearRegression(df: pd.DataFrame):
 
     y = np.array(df['label'])[:-forecast_days]
 
-    X_train, X_test, y_train, y_test = get_train_test_split(X, y, 0.8)
+    X_train, X_test, y_train, y_test = get_train_test_split(X, y, 0.2)
 
-    print(len(X_test))
-    print(len(X_train))
-    print(len(y_test))
+    print(X_train[:, 0].shape)
     print(len(y_train))
-    #
+    assert len(X_train) == len(y_train)
+    assert len(X_test) == len(y_test)
+
     linearReg = LinearRegression().fit(X_train, y_train)
     print("Linear regression = " + str(linearReg.score(X_test, y_test)))
-    #
+
     forecastLinearReg = linearReg.predict(X_lately)
     print("Linear regression forecast = " + str(forecastLinearReg))
 
     logisticReg = LogisticRegression(solver='liblinear', multi_class='ovr').fit(X_train, y_train)
     print("Logistic regression = " + str(logisticReg.score(X_test, y_test)))
-    #
+
     forecastLogisticReg = logisticReg.predict(X_lately)
     print("Logistic regression forecast = " + str(forecastLogisticReg))
+
+    plotResults(X_train, y_train, X_test, logisticReg, linearReg)
 
 
 def createLabel(x):
@@ -99,3 +102,28 @@ def get_train_test_split(X, y, size):
     y_train = y[:-math.ceil(len(y) * size)]
     y_test = y[-math.ceil(len(y) * size):]
     return X_train, X_test, y_train, y_test
+
+
+def model(x):
+    return 1 / (1 + np.exp(-x))
+
+
+def plotResults(X_train, y_train, X_test, logisticReg, linearReg):
+    plt.figure(1, figsize=(4, 3))
+    plt.clf()
+    plt.scatter(X_train[:, 0], y_train[:], color='black', zorder=20)
+
+    # Plotting logistic regression
+    plt.plot(X_test, model(X_test * logisticReg.coef_ + logisticReg.intercept_), color='red', linewidth=3)
+
+    # Preparing Linear Regression
+    plt.plot(X_test, linearReg.coef_ * X_test + linearReg.intercept_, linewidth=1)
+
+    plt.ylabel('y')
+    plt.xlabel('X')
+    plt.yticks([-1, -0.5, 0, 0.5, 1])
+    plt.legend(('Logistic Regression Model', 'Linear Regression Model'),
+               loc="lower right", fontsize='small')
+    plt.tight_layout()
+
+    plt.show()

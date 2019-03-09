@@ -17,15 +17,15 @@ def readData():
 
 def visualize(df: pd.DataFrame):
     print(df.head())
-    plt.scatter(df.Date, df.Close)
+    # plt.scatter(df["Adj Close"], df.label)
     plt.legend()
     plt.show()
 
 
 df = readData()
-# visualize(df)
 df = regression.addFeatures(df)
-df.drop(columns=['12-day-EMA', '26-day-EMA', '9-day-EMA', 'Open', 'High', 'Low'], inplace=True)
+# visualize(df)
+df.drop(columns=['12-day-EMA', '26-day-EMA', '9-day-EMA', 'Open', 'High', 'Low', 'Date'], inplace=True)
 # print(df.tail())
-print(df.corr())
+# print(df.corr())
 regression.linearRegression(df)
