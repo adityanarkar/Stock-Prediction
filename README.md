@@ -30,3 +30,8 @@ Plan of action
 How ARMA process models can help predict the stock's future values. 
 * [Basics](https://www.youtube.com/watch?v=v70-kLB3BLM)
 * ARMA process models will try to find a better value for the `rho`.
+
+**Mar 11 2019**
+Another approach to create labels:
+1. Max (High price) for next 10 days
+2. Average of (High-low) for next 10 days
