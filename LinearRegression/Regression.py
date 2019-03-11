@@ -3,9 +3,7 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.svm import LinearSVC
+from sklearn.linear_model import LinearRegression, LogisticRegression
 
 import features
 
@@ -74,25 +72,17 @@ def linearRegression(df: pd.DataFrame):
     assert len(X_train) == len(y_train)
     assert len(X_test) == len(y_test)
 
-    # linearReg = LinearRegression().fit(X_train, y_train)
-    # print("Linear regression = " + str(linearReg.score(X_test, y_test)))
-    #
-    # forecastLinearReg = linearReg.predict(X_lately)
-    # print("Linear regression forecast = " + str(forecastLinearReg))
-    #
-    # logisticReg = LogisticRegression(solver='liblinear', multi_class='ovr').fit(X_train, y_train)
-    # print("Logistic regression = " + str(logisticReg.score(X_test, y_test)))
-    #
-    # forecastLogisticReg = logisticReg.predict(X_lately)
-    # print("Logistic regression forecast = " + str(forecastLogisticReg))
-    #
-    svm_clf = Pipeline([
-        ("scaler", StandardScaler()),
-        ("linear_svc", LinearSVC(C=1, loss="hinge"))
-    ])
+    linearReg = LinearRegression().fit(X_train, y_train)
+    print("Linear regression = " + str(linearReg.score(X_test, y_test)))
 
-    svm_clf.fit(X_train, y_train)
-    print("Svm : " + str(svm_clf.predict(X_lately)))
+    forecastLinearReg = linearReg.predict(X_lately)
+    print("Linear regression forecast = " + str(forecastLinearReg))
+
+    logisticReg = LogisticRegression(solver='liblinear', multi_class='ovr').fit(X_train, y_train)
+    print("Logistic regression = " + str(logisticReg.score(X_test, y_test)))
+
+    forecastLogisticReg = logisticReg.predict(X_lately)
+    print("Logistic regression forecast = " + str(forecastLogisticReg))
 
     # plotResults(X_train, y_train, X_test, logisticReg, linearReg)
 
