@@ -14,6 +14,6 @@ def readData():
 
 df = readData()
 df = regression.addFeatures(df)
-df.drop(columns=['12-day-EMA', '26-day-EMA', '9-day-EMA', 'Open', 'High', 'Low', 'Date', 'Adj Close'], inplace=True)
+df.drop(columns=['12-day-EMA', '26-day-EMA', '9-day-EMA', 'Date'], inplace=True)
 
 regression.linearRegression(df)
