@@ -76,7 +76,16 @@ def RSI(df: pd.DataFrame, close):
         AvgGain = temp[temp > 0].sum() / 14
         AvgLoss = -1 * (temp[temp < 0].sum()) / 14
         RS = AvgGain / AvgLoss
-        df.iloc[row, -1] = 100 - (100 / (1 + RS))
+        RSIvalue = 100 - (100 / (1 + RS))
+        if (RSIvalue > 70):
+            df.iloc[row, -1] = -1
+        elif (RSIvalue < 30):
+            df.iloc[row, -1] = 1
+        else:
+            if (df.iloc[row - 1, -1] != np.nan and RSIvalue > df.iloc[row - 1, -1]):
+                df.iloc[row, -1] = 1
+            else:
+                df.iloc[row, -1] = -1
 
 
 
