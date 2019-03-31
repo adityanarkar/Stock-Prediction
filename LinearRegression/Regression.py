@@ -50,13 +50,36 @@ def addFeatures(df: pd.DataFrame):
     df.dropna(inplace=True)
 
     df['label'] = df['Adj Close'].shift(-forecast_days)
-    df['label'] = df.apply(createLabel, axis=1)
 
     print(df.tail(11))
     return df
 
 
 def linearRegression(df: pd.DataFrame):
+    X_temp = np.array(df.drop(['label'], 1))
+
+    X = X_temp[:-forecast_days]
+
+    X_lately = X_temp[-forecast_days:]
+
+    y = np.array(df['label'])[:-forecast_days]
+
+    X_train, X_test, y_train, y_test = get_train_test_split(X, y, 0.2)
+
+    assert len(X_train) == len(y_train)
+    assert len(X_test) == len(y_test)
+
+    linearReg = LinearRegression().fit(X_train, y_train)
+    print("Linear regression = " + str(linearReg.score(X_test, y_test)))
+
+    forecastLinearReg = linearReg.predict(X_lately)
+    print("Linear regression forecast = " + str(forecastLinearReg))
+
+    # plotResults(X_train, y_train, X_test, logisticReg, linearReg)
+
+
+def logisticRegression(df: pd.DataFrame):
+    df['label'] = df.apply(createLabel, axis=1)
 
     X_temp = np.array(df.drop(['label'], 1))
 
@@ -68,15 +91,8 @@ def linearRegression(df: pd.DataFrame):
 
     X_train, X_test, y_train, y_test = get_train_test_split(X, y, 0.2)
 
-
     assert len(X_train) == len(y_train)
     assert len(X_test) == len(y_test)
-
-    linearReg = LinearRegression().fit(X_train, y_train)
-    print("Linear regression = " + str(linearReg.score(X_test, y_test)))
-
-    forecastLinearReg = linearReg.predict(X_lately)
-    print("Linear regression forecast = " + str(forecastLinearReg))
 
     logisticReg = LogisticRegression(solver='liblinear', multi_class='ovr').fit(X_train, y_train)
     print("Logistic regression = " + str(logisticReg.score(X_test, y_test)))
@@ -84,16 +100,18 @@ def linearRegression(df: pd.DataFrame):
     forecastLogisticReg = logisticReg.predict(X_lately)
     print("Logistic regression forecast = " + str(forecastLogisticReg))
 
-    # plotResults(X_train, y_train, X_test, logisticReg, linearReg)
-
 
 def createLabel(x):
+    # You can create a label based on
+    # 1. Max (High price) for next 10 days
+    # 2. Average of (High-low) for next 10 days
+
     if math.isnan(x['label']):
         return np.nan
     elif x['label'] > x['Adj Close']:
         return 1
     else:
-        return -1
+        return 0
 
 
 def get_train_test_split(X, y, size):

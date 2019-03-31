@@ -6,7 +6,7 @@ from sklearn.svm import LinearSVC
 
 import Regression as regression
 
-forecast_days = 20
+forecast_days = 10
 
 svm_clf = Pipeline([
     ("scaler", StandardScaler()),
@@ -16,11 +16,12 @@ svm_clf = Pipeline([
 
 def fit(df: pd.DataFrame):
     print(df.tail(20))
+
     X_temp = np.array(df.drop(['label'], 1))
 
     X = X_temp[:-forecast_days]
 
-    X_lately = X_temp[-forecast_days:-10]
+    X_lately = X_temp[-forecast_days:]
 
     y = np.array(df['label'])[:-forecast_days]
 
