@@ -49,11 +49,17 @@ def addFeatures(df: pd.DataFrame):
     features.MACD(df, closeIndex)
     df.dropna(inplace=True)
 
-    df['label'] = df['Adj Close'].shift(-forecast_days)
+    df = generateLabel(df, highIndex)
 
-    print(df.tail(11))
+    print(df.tail(20))
     return df
 
+
+def generateLabel(df: pd.DataFrame, highIndex):
+    df['label'] = np.nan
+    for row in range(0, len(df.index) - forecast_days):
+        df.iloc[row, -1] = df.iloc[row + 1:row + forecast_days + 1, highIndex].max()
+    return df
 
 def linearRegression(df: pd.DataFrame):
     X_temp = np.array(df.drop(['label'], 1))
