@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC, SVR
+import math
 
 import Regression as regression
 
@@ -15,7 +16,8 @@ svm_clf = Pipeline([
 
 
 def fit(df: pd.DataFrame):
-    print(df.tail(20))
+
+    df['label'] = df.apply(createLabel, axis=1)
 
     X_temp = np.array(df.drop(['label'], 1))
 
@@ -37,3 +39,18 @@ def fit(df: pd.DataFrame):
 
     svm_clf.fit(X_train, y_train)
     print("Svm : " + str(svm_clf.predict(X_lately)))
+    print("Score: " + str(svm_clf.score(X_test, y_test)))
+    return svm_clf.predict(X_lately)
+
+
+def createLabel(x):
+    # You can create a label based on
+    # 1. Max (High price) for next 10 days
+    # 2. Average of (High-low) for next 10 days
+
+    if math.isnan(x['label']):
+        return np.nan
+    elif x['label'] > x['Adj Close']:
+        return 1
+    else:
+        return -1

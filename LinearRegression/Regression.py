@@ -21,10 +21,10 @@ def addFeatures(df: pd.DataFrame):
 
     df['HL_PCT'] = ((df['High'] - df['Low']) / df['Low']) * 100
     df['PCT_CHNG'] = ((df['Open'] - df['Adj Close']) / df['Adj Close']) * 100
-
+    #
     df['Moving_Avg'] = np.nan
     features.simpleMA(df, moving_avg_window, closeIndex)
-
+    #
     df['Weighted_MA'] = np.nan
     features.weightedMA(df, moving_avg_window, closeIndex)
     df.dropna(inplace=True)
@@ -49,9 +49,9 @@ def addFeatures(df: pd.DataFrame):
     features.MACD(df, closeIndex)
     df.dropna(inplace=True)
 
-    df = generateLabel(df, highIndex)
+    df['label'] = df['Adj Close'].shift(-forecast_days)
 
-    print(df.tail(20))
+    # print(df.tail(20))
     return df
 
 
@@ -63,6 +63,7 @@ def generateLabel(df: pd.DataFrame, highIndex):
 
 def linearRegression(df: pd.DataFrame):
     X_temp = np.array(df.drop(['label'], 1))
+    print(df)
 
     X = X_temp[:-forecast_days]
 
@@ -79,32 +80,30 @@ def linearRegression(df: pd.DataFrame):
     print("Linear regression = " + str(linearReg.score(X_test, y_test)))
 
     forecastLinearReg = linearReg.predict(X_lately)
-    print("Linear regression forecast = " + str(forecastLinearReg))
 
-    # plotResults(X_train, y_train, X_test, logisticReg, linearReg)
 
+    return forecastLinearReg
 
 def logisticRegression(df: pd.DataFrame):
     df['label'] = df.apply(createLabel, axis=1)
 
     X_temp = np.array(df.drop(['label'], 1))
-
     X = X_temp[:-forecast_days]
-
     X_lately = X_temp[-forecast_days:]
-
     y = np.array(df['label'])[:-forecast_days]
-
+    print(y)
     X_train, X_test, y_train, y_test = get_train_test_split(X, y, 0.2)
 
     assert len(X_train) == len(y_train)
     assert len(X_test) == len(y_test)
 
-    logisticReg = LogisticRegression(solver='liblinear', multi_class='ovr').fit(X_train, y_train)
+    logisticReg = LogisticRegression(solver='liblinear', C=0.1).fit(X_train, y_train)
     print("Logistic regression = " + str(logisticReg.score(X_test, y_test)))
 
     forecastLogisticReg = logisticReg.predict(X_lately)
     print("Logistic regression forecast = " + str(forecastLogisticReg))
+
+    return forecastLogisticReg
 
 
 def createLabel(x):
@@ -117,7 +116,7 @@ def createLabel(x):
     elif x['label'] > x['Adj Close']:
         return 1
     else:
-        return 0
+        return -1
 
 
 def get_train_test_split(X, y, size):
@@ -125,11 +124,8 @@ def get_train_test_split(X, y, size):
     X_test = X[-math.ceil(len(X) * size):]
     y_train = y[:-math.ceil(len(y) * size)]
     y_test = y[-math.ceil(len(y) * size):]
+
     return X_train, X_test, y_train, y_test
-
-
-def model(x):
-    return 1 / (1 + np.exp(-x))
 
 
 def plotResults(X_train, y_train, X_test, logisticReg, linearReg):
@@ -138,7 +134,7 @@ def plotResults(X_train, y_train, X_test, logisticReg, linearReg):
     plt.scatter(X_train[:, 0], y_train[:], color='black', zorder=20)
 
     # Plotting logistic regression
-    plt.plot(X_test, model(X_test * logisticReg.coef_ + logisticReg.intercept_), color='red', linewidth=3)
+    plt.plot(X_test, X_test * logisticReg.coef_ + logisticReg.intercept_, color='red', linewidth=3)
 
     # Preparing Linear Regression
     plt.plot(X_test, linearReg.coef_ * X_test + linearReg.intercept_, linewidth=1)
