@@ -6,7 +6,7 @@ import Regression as regression
 import math
 import numpy as np
 
-STOCK = 'Titan'
+STOCK = 'Symphony'
 LOCAL_FILE_PATH = os.path.join("datasets", STOCK, STOCK+".NS.CSV")
 
 
@@ -112,6 +112,47 @@ def testSVM():
             else:
                 writeIntoFile('\n0', file, 'a')
 
+def testFusion():
+    file = STOCK + 'SVM-LR-fusion-result.txt'
+    dfComplete = createDataFrame()
+    writeIntoFile(STOCK, file, 'w')
+    count = 0
+
+    for i in range(20, 100):
+        df = dfComplete[:-i]
+        dfRem = dfComplete[-i:(-i + 10)]
+
+        minMaxRange = getMinMax(dfRem)
+
+        regResult = regression.linearRegression(df)
+        minLR = min(regResult)
+        maxLR = max(regResult)
+
+        result = svm.fit(df)
+        zeros = result.tolist().count(0)
+        last = (df.tail(1)['Adj Close']).values
+
+        if zeros < 5:
+            if maxLR > last:
+                if minMaxRange[1] > last:
+                    writeIntoFile('\n1', file, 'a')
+                    count = count + abs(minMaxRange[1] - last)
+                else:
+                    writeIntoFile('\n0', file, 'a')
+            else:
+                writeIntoFile('\nNot trading', file, 'a')
+        else:
+            if maxLR < last:
+                if minMaxRange[1] < last:
+                    writeIntoFile('\n1', file, 'a')
+                    count = count + abs(last - minMaxRange[1])
+                else:
+                    writeIntoFile('\n0', file, 'a')
+            else:
+                writeIntoFile('\nNot trading', file, 'a')
+
+    writeIntoFile(str(count), file, 'a')
+
 def createLabel(x):
     # You can create a label based on
     # 1. Max (High price) for next 10 days
@@ -132,5 +173,6 @@ def generateLabel(df: pd.DataFrame, highIndex):
 
 
 # testLinearRegression()
-testLogisticRegression()
+# testLogisticRegression()
 # testSVM()
+testFusion()
